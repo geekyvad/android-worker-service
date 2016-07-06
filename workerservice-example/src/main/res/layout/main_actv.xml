@@ -1,19 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+        <import type="java.lang.String" alias="String"/>
+        <variable
+            name="simpleCounter"
+            type="com.geekyvad.workerserviceapp.gui.MainActv.SimpleCounterBind"
+            />
+        <variable
+            name="restartableCounter"
+            type="com.geekyvad.workerserviceapp.gui.MainActv.RestartableCounterBind"
+            />
+    </data>
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.geekyvad.workerserviceapp.MainActv"
+    tools:context=".gui.MainActv"
     >
 
-    <TextView
-        android:text="Hello World!"
+    <!-- Simple Counter -->
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Simple counter"
+            />
+
+        <Button
+            android:id="@+id/SimpleCounter_StartStopBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@{simpleCounter.completed ? &quot;Start&quot; : &quot;Stop&quot; }"
+            android:onClick="@{simpleCounter.onStartStopClicked}"
+            />
+
+        <TextView
+            android:id="@+id/SimpleCounter_Count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@{String.valueOf(simpleCounter.counter) + ( simpleCounter.completed ? &quot; (done)&quot; : &quot;&quot; ) }"
+            />
+
+    </LinearLayout>
+
+    <!-- Restartable Counter -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Restartable counter"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            >
+
+            <EditText
+                android:id="@+id/RestartableCounter_Start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:text="@={restartableCounter.start}"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" - "
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                />
+
+            <EditText
+                android:id="@+id/RestartableCounter_End"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:text="@={restartableCounter.end}"
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/RestartableCounter_StartStopBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@{restartableCounter.completed ? &quot;Start&quot; : &quot;Stop&quot; }"
+            android:onClick="@{restartableCounter.onStartStopClicked}"
+            />
+
+        <Button
+            android:id="@+id/RestartableCounter_RestartBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Restart"
+            android:onClick="@{restartableCounter.onRestartClicked}"
+            />
+
+        <TextView
+            android:id="@+id/RestartableCounter_Count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@{String.valueOf(restartableCounter.counter) + ( restartableCounter.completed ? &quot; (done)&quot; : &quot;&quot; ) }"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
+</layout>
