@@ -1,5 +1,28 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'android-worker-service'
+ 
+    publishedGroupId = 'com.geekyvad.workerservice'
+    artifact = 'workerservice'
+    libraryVersion = '0.1.0'
+
+    libraryName = 'AndroidWorkerService'
+    libraryDescription = 'Android service that allows multiple asynchronous workers'
+ 
+    siteUrl = 'https://github.com/geekyvad/android-worker-service'
+    gitUrl = 'https://github.com/geekyvad/android-worker-service.git'
+
+    developerId = 'geekyvad'
+    developerName = 'Vadim Zadorozhny'
+    developerEmail = 'vadim.zadorozhny@gmail.com'
+ 
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -24,3 +47,6 @@ dependencies {
     compile 'com.android.support:support-annotations:23.4.0'
     provided 'org.greenrobot:eventbus:3.0.0'
 }
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
