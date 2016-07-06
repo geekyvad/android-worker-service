@@ -1,0 +1,1 @@
+include ':workerservice-example', ':workerservice'
