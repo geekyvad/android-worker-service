@@ -1,10 +1,13 @@
-package com.geekyvad.workerservice;
+package com.geekyvad.workerservice.svc;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.*;
 import android.support.annotation.NonNull;
+import com.geekyvad.workerservice.wrk.HandlerWorker;
+import com.geekyvad.workerservice.util.LogUtils;
+import com.geekyvad.workerservice.wrk.ThreadWorker;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.*;
@@ -177,7 +180,7 @@ public class WorkerManager
 
   /* Internal message handling */
 
-  protected void onWorkerExit( final IWorker worker )
+  public void onWorkerExit( final IWorker worker )
   {
     LogUtils.LOGV( TAG, "onWorkerExit: " + worker.getWorkerName() );
     // Post to main service thread we've honestly killed the worker

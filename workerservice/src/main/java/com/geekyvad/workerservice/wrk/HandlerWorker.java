@@ -1,10 +1,15 @@
-package com.geekyvad.workerservice;
+package com.geekyvad.workerservice.wrk;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.*;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.geekyvad.workerservice.util.LogUtils;
+import com.geekyvad.workerservice.svc.IWorker;
+import com.geekyvad.workerservice.svc.WorkerManager;
+import com.geekyvad.workerservice.svc.WorkerServiceConfig;
+import com.geekyvad.workerservice.svc.WorkerServiceEvents;
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -35,8 +40,8 @@ abstract public class HandlerWorker extends HandlerThread implements IWorker
 
   /* Message handling */
 
-  @SuppressLint( "HandlerLeak" )
-  protected class MessageHandler extends Handler
+  //@SuppressLint( "HandlerLeak" )
+  public class MessageHandler extends Handler
   {
     @SuppressWarnings( "unused" )
     public MessageHandler()
@@ -69,9 +74,9 @@ abstract public class HandlerWorker extends HandlerThread implements IWorker
   } // MessageHandler
 
   /**
-   * Base implementation creates {@link com.geekyvad.workerservice.HandlerWorker.MessageHandler}.
+   * Base implementation creates {@link HandlerWorker.MessageHandler}.
    * Subclasses may create their own handler but it must be subclass of
-   * {@link com.geekyvad.workerservice.HandlerWorker.MessageHandler}.<br>
+   * {@link HandlerWorker.MessageHandler}.<br>
    * This method called from caller's thread (not worker thread)
    */
   public MessageHandler onCreateMessageHandler( Looper looper )

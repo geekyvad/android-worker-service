@@ -1,4 +1,4 @@
-package com.geekyvad.workerservice;
+package com.geekyvad.workerservice.svc;
 
 /**
  * @author Vadim Zadorozhny (created on 06.07.2016)

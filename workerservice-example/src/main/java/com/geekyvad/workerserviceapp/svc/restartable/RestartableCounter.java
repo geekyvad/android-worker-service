@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.geekyvad.workerservice.HandlerWorker;
+import com.geekyvad.workerservice.wrk.HandlerWorker;
 import com.geekyvad.workerserviceapp.svc.MainService;
 import org.greenrobot.eventbus.EventBus;
 import rx.android.schedulers.AndroidSchedulers;

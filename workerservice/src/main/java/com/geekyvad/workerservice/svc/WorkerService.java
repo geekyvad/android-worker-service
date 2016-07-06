@@ -1,4 +1,4 @@
-package com.geekyvad.workerservice;
+package com.geekyvad.workerservice.svc;
 
 import android.app.Application;
 import android.app.Service;
@@ -8,6 +8,7 @@ import android.os.*;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.geekyvad.workerservice.util.LogUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.atomic.AtomicBoolean;

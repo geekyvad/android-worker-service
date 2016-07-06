@@ -1,4 +1,4 @@
-package com.geekyvad.workerservice;
+package com.geekyvad.workerservice.msg;
 
 /**
  * @author Vadim Zadorozhny

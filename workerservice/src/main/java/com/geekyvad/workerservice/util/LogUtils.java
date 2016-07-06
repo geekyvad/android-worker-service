@@ -16,9 +16,11 @@
 
 // // TODO: 06.07.2016 add my license
 
-package com.geekyvad.workerservice;
+package com.geekyvad.workerservice.util;
 
 import android.util.Log;
+import com.geekyvad.workerservice.BuildConfig;
+import com.geekyvad.workerservice.svc.WorkerServiceConfig;
 
 public class LogUtils
 {

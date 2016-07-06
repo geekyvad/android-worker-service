@@ -1,4 +1,4 @@
-package com.geekyvad.workerservice;
+package com.geekyvad.workerservice.svc;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 /**
  * @author Vadim Zadorozhny
  */
-interface IWorker
+public interface IWorker
 {
   void init( @NonNull Context context, @NonNull String workerName, @Nullable Bundle params,
       @NonNull WorkerManager manager );
