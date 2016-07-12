@@ -15,6 +15,8 @@
  */
 package com.geekyvad.android.workerservice.svc;
 
+import android.util.Log;
+
 public class WorkerServiceConfig
 {
 
@@ -52,5 +54,5 @@ public class WorkerServiceConfig
   private static WorkerServiceConfig ourInstance = new WorkerServiceConfig();
 
   private boolean mThrowRuntimeExceptions;
-  private int mLogLevel;
+  private int mLogLevel = Log.WARN;
 }
