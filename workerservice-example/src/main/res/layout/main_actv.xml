@@ -8,11 +8,11 @@
         <import type="java.lang.String" alias="String"/>
         <variable
             name="simpleCounter"
-            type="com.geekyvad.workerserviceapp.gui.MainActv.SimpleCounterBind"
+            type="com.geekyvad.android.workerserviceapp.gui.MainActv.SimpleCounterBind"
             />
         <variable
             name="restartableCounter"
-            type="com.geekyvad.workerserviceapp.gui.MainActv.RestartableCounterBind"
+            type="com.geekyvad.android.workerserviceapp.gui.MainActv.RestartableCounterBind"
             />
     </data>
 

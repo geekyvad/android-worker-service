@@ -2,12 +2,41 @@
 
 Android service that allows multiple asynchronous workers to be controlled independently and simplifies implementation of background business logic of your android app.
 
+Usage
+-----
+
+**Gradle dependency**
+
+  -  Add the following to your project level `build.gradle`:
+
+  
+```gradle
+allprojects {
+	repositories {
+		maven { url 'https://dl.bintray.com/geekyvad/maven' }
+	}
+}
+```
+  -  Add this to your app `build.gradle`:
+ 
+```gradle
+dependencies {
+	compile 'com.geekyvad.android:workerservice:0.1.0'
+}
+```
+
+Dependencies
+------------
+
+  * [Android support annotations](https://developer.android.com/reference/android/support/annotation/package-summary.html)
+  * [greenrobot EventBus](https://github.com/greenrobot/EventBus)
+
 
 License
 -------
 
 
-    Copyright (C) 2016  Vadim Zadorozhny
+    Copyright (C) 2016 Vadim Zadorozhny
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

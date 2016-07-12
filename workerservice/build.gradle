@@ -4,7 +4,7 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'android-worker-service'
  
-    publishedGroupId = 'com.geekyvad.workerservice'
+    publishedGroupId = 'com.geekyvad.android'
     artifact = 'workerservice'
     libraryVersion = '0.1.0'
 

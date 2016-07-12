@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.geekyvad.workerserviceapp"
+        applicationId "com.geekyvad.android.workerserviceapp"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
