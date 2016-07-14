@@ -26,7 +26,6 @@ import android.support.annotation.Nullable;
 import com.geekyvad.android.workerservice.util.LogUtils;
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class WorkerService extends Service
 {
@@ -187,13 +186,12 @@ abstract public class WorkerService extends Service
   /**
    * Called from {@link #onCreate()} on main thread. Super class implementation creates default
    * worker manager.
-   * @param app             Application object
    * @param serviceHandler  Service handler created in {@link #onCreateServiceHandler(HandlerThread)}
    * @return new worker manager object
    */
-  protected WorkerManager onCreateWorkerManager( Application app, ServiceHandler serviceHandler )
+  protected WorkerManager onCreateWorkerManager( ServiceHandler serviceHandler )
   {
-    return new WorkerManager( getApplication(), mServiceHandler );
+    return new WorkerManager( getApplication(), this, mServiceHandler );
   }
 
   /* Service status */
@@ -207,11 +205,6 @@ abstract public class WorkerService extends Service
     }
     return status;
   }
-
-//  public static boolean isCreated()
-//  {
-//    return stServiceCreated != null && stServiceCreated.get();
-//  }
 
   /* Lifecycle */
 
@@ -240,11 +233,10 @@ abstract public class WorkerService extends Service
     mServiceHandler = onCreateServiceHandler( thread );
 
     // Worker manager will notify main service when last worker finished its job
-    mWorkerManager = onCreateWorkerManager( getApplication(), mServiceHandler );
+    mWorkerManager = onCreateWorkerManager( mServiceHandler );
     onRegisterWorkerClasses( mWorkerManager );
 
     // Notify that service has started
-//    stServiceCreated.set( true );
     WorkerServiceEvents.ServiceActivityStatus status = obtainServiceStatusEvent();
     status.started = true;
     status.shuttingDown = false;
@@ -464,7 +456,7 @@ abstract public class WorkerService extends Service
 
     if( !proceedShutdown ) {
       // Restore worker manager
-      mWorkerManager = new WorkerManager( getApplication(), mServiceHandler );
+      mWorkerManager = onCreateWorkerManager( mServiceHandler );
       mQuitting = false;
     }
 

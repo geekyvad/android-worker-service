@@ -46,6 +46,7 @@ public class MainActv extends AppCompatActivity
 
     // Startup worker here because we'll send commands to it from other places of this activity
     RestartableCounter.createWorker( getApplicationContext() );
+    RestartableCounter.enableForeground( getApplicationContext(), false );
 
     if( savedInstanceState != null ) {
       mRestartableCounterBind.start.set( savedInstanceState.getString( STATE_RESTARTABLE_START ) );
@@ -66,19 +67,21 @@ public class MainActv extends AppCompatActivity
   {
     super.onStart();
     EventBus.getDefault().register( this );
+    RestartableCounter.enableForeground( getApplicationContext(), false );
   }
 
   @Override
   protected void onStop()
   {
     EventBus.getDefault().unregister( this );
+    RestartableCounter.enableForeground( getApplicationContext(), true );
     super.onStop();
   }
 
   @Override
   protected void onDestroy()
   {
-    if( !isChangingConfigurations() && MainService.isCreated() ) {
+    if( !isChangingConfigurations() && MainService.obtainServiceStatusEvent().started ) {
       MainService.shutdownService( getApplicationContext(), false, true );
     }
     super.onDestroy();

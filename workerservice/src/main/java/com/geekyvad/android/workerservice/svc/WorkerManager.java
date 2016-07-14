@@ -36,10 +36,11 @@ public class WorkerManager
 
   /* Initialization */
 
-  public WorkerManager( Application app, Handler mainServiceHandler )
+  public WorkerManager( Application app, WorkerService service, Handler serviceHandler )
   {
     mContext = app.getApplicationContext();
-    mMainSvcHandler = mainServiceHandler;
+    mWorkerService = service;
+    mMainSvcHandler = serviceHandler;
   }
 
   public void registerWorkerClass( String workerType, Class< ? extends IWorker> workerClass )
@@ -266,6 +267,11 @@ public class WorkerManager
     return mBlockNewWorkers;
   }
 
+  public WorkerService getWorkerService()
+  {
+    return mWorkerService;
+  }
+
   public void postToUiThread( Runnable runnable )
   {
     if( mMainHandler == null ) {
@@ -277,6 +283,7 @@ public class WorkerManager
   /* Data members */
 
   private Context mContext;
+  private WorkerService mWorkerService;
   private Handler mMainSvcHandler;
   private Map<String, IWorker> mWorkers = new HashMap<>();
   private final Map<String, Class<? extends IWorker>> mWorkerClasses = new HashMap<>();

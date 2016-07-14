@@ -11,7 +11,9 @@
         android:theme="@style/AppTheme"
         android:name=".ExampleApp"
         >
-        <activity android:name=".gui.MainActv">
+        <activity
+            android:name=".gui.MainActv"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
