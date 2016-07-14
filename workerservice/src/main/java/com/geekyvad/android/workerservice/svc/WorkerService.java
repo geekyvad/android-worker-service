@@ -63,14 +63,17 @@ abstract public class WorkerService extends Service
   public static final String PARAM_FORCE_SERVICE_SHUTDOWN = "param.ForceShutdown";
 
   /**
+   * Send worker a message, usually passed as {@link #PARAM_WORKER_MSG} parameter
+   */
+  public static final String ACTION_SEND_WORKER_MSG = "action.SendWorkerMsg";
+
+  public static final String PARAM_WORKER_MSG = "WorkerMsgParam.MSG";
+
+  /**
    * Shutdown worker manager, all workers and stopSelf for service. By default it waits
    * for workers when they exit.
    */
   public static final String ACTION_SHUTDOWN_SERVICE = "action.ShutdownService";
-
-  public static final String ACTION_SEND_WORKER_MSG = "action.SendWorkerMsg";
-
-  public static final String PARAM_WORKER_MSG = "WorkerMsgParam.MSG";
 
   public static final String DEBUG_ACTION_LOG_ACTIVE_WORKER_NAMES = "debugAction.LogActiveWorkers";
 
@@ -154,6 +157,47 @@ abstract public class WorkerService extends Service
     return intent;
   }
 
+  /* Overridables */
+
+  /**
+   *  Override to register your workers. Called from {@link #onCreate()} on main thread.
+   */
+  abstract protected void onRegisterWorkerClasses( WorkerManager workerManager );
+
+  /**
+   * Called from {@link #onCreate()} on main thread.
+   * @return new configuration object
+   */
+  protected WorkerServiceConfig onCreateConfiguration()
+  {
+    return WorkerServiceConfig.getInstance();
+  }
+
+  /**
+   * Called from {@link #onCreate()} on main thread. Super class implementation creates default
+   * {@link ServiceHandler}.
+   * @param serviceThread Thread, the service handler will operate on.
+   * @return new service handler object
+   */
+  protected ServiceHandler onCreateServiceHandler( HandlerThread serviceThread )
+  {
+    return new ServiceHandler( serviceThread.getLooper() );
+  }
+
+  /**
+   * Called from {@link #onCreate()} on main thread. Super class implementation creates default
+   * worker manager.
+   * @param app             Application object
+   * @param serviceHandler  Service handler created in {@link #onCreateServiceHandler(HandlerThread)}
+   * @return new worker manager object
+   */
+  protected WorkerManager onCreateWorkerManager( Application app, ServiceHandler serviceHandler )
+  {
+    return new WorkerManager( getApplication(), mServiceHandler );
+  }
+
+  /* Service status */
+
   public static WorkerServiceEvents.ServiceActivityStatus obtainServiceStatusEvent()
   {
     WorkerServiceEvents.ServiceActivityStatus status =
@@ -164,25 +208,10 @@ abstract public class WorkerService extends Service
     return status;
   }
 
-  /* Overridables */
-
-  /** Override to register your workers */
-  abstract protected void onRegisterWorkerClasses( WorkerManager workerManager );
-
-  protected WorkerServiceConfig onCreateConfiguration()
-  {
-    return WorkerServiceConfig.getInstance();
-  }
-
-  protected ServiceHandler onCreateServiceHandler( HandlerThread serviceThread )
-  {
-    return new ServiceHandler( serviceThread.getLooper() );
-  }
-
-  protected WorkerManager onCreateWorkerManager( Application app, ServiceHandler serviceHandler )
-  {
-    return new WorkerManager( getApplication(), mServiceHandler );
-  }
+//  public static boolean isCreated()
+//  {
+//    return stServiceCreated != null && stServiceCreated.get();
+//  }
 
   /* Lifecycle */
 
@@ -215,7 +244,7 @@ abstract public class WorkerService extends Service
     onRegisterWorkerClasses( mWorkerManager );
 
     // Notify that service has started
-    stServiceCreated.set( true );
+//    stServiceCreated.set( true );
     WorkerServiceEvents.ServiceActivityStatus status = obtainServiceStatusEvent();
     status.started = true;
     status.shuttingDown = false;
@@ -235,7 +264,7 @@ abstract public class WorkerService extends Service
     EventBus.getDefault().postSticky( status );
     // Clear 'shutting down' flag
 
-    stServiceCreated.set( false );
+//    stServiceCreated.set( false );
     mConfiguration = null;
   }
 
@@ -287,11 +316,6 @@ abstract public class WorkerService extends Service
     throw new UnsupportedOperationException( "Not yet implemented" );
   }
 
-  public static boolean isCreated()
-  {
-    return stServiceCreated != null && stServiceCreated.get();
-  }
-
   /* Message handling */
 
   static final int MSG_WHAT_SERVICE_COMMAND = 1;
@@ -319,7 +343,7 @@ abstract public class WorkerService extends Service
       }
     }
 
-    private void onCommand( Message msg )
+    protected void onCommand( Message msg )
     {
       LogUtils.LOGV( TAG, "onCommand" );
       Bundle msgData = msg.getData();
@@ -349,7 +373,7 @@ abstract public class WorkerService extends Service
 
     }
 
-    private void onInternalStatus( Message msg )
+    protected void onInternalStatus( Message msg )
     {
       LogUtils.LOGV( TAG, "onInternalStatus" );
       //noinspection StatementWithEmptyBody
@@ -363,7 +387,7 @@ abstract public class WorkerService extends Service
       }
     }
 
-    private void onShutdown( Intent intent )
+    protected void onShutdown( Intent intent )
     {
       LogUtils.LOGV( TAG, "onShutdown" );
       if( handleShutdown( intent ) ) {
@@ -460,7 +484,7 @@ abstract public class WorkerService extends Service
    */
   private boolean mQuitting;
 
-  private static AtomicBoolean stServiceCreated = new AtomicBoolean( false );
+//  private static AtomicBoolean stServiceCreated = new AtomicBoolean( false );
 
   private static final String TAG = LogUtils.makeLogTag( WorkerService.class );
 }
