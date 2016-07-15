@@ -22,18 +22,21 @@ import android.databinding.ObservableInt;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import com.geekyvad.android.workerservice.svc.WorkerServiceEvents;
+import com.geekyvad.android.workerservice.svc.WorkerServiceStarter;
 import com.geekyvad.android.workerserviceapp.R;
 import com.geekyvad.android.workerserviceapp.databinding.MainActvBinding;
-import com.geekyvad.android.workerserviceapp.svc.MainService;
-import com.geekyvad.android.workerserviceapp.svc.counter.SimpleCounter;
-import com.geekyvad.android.workerserviceapp.svc.counter.SimpleCounterEvents;
-import com.geekyvad.android.workerserviceapp.svc.restartable.RestartableCounter;
-import com.geekyvad.android.workerserviceapp.svc.restartable.RestartableCounterEvents;
+import com.geekyvad.android.workerserviceapp.wrk.MainService;
+import com.geekyvad.android.workerserviceapp.wrk.counter.SimpleCounter;
+import com.geekyvad.android.workerserviceapp.wrk.counter.SimpleCounterEvents;
+import com.geekyvad.android.workerserviceapp.wrk.restartable.RestartableCounter;
+import com.geekyvad.android.workerserviceapp.wrk.restartable.RestartableCounterEvents;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class MainActv extends AppCompatActivity
+public class MainActv extends AppCompatActivity implements
+    WorkerServiceStarter.Callback
 {
 
   @Override
@@ -44,9 +47,8 @@ public class MainActv extends AppCompatActivity
     binding.setSimpleCounter( mSimpleCounterBind );
     binding.setRestartableCounter( mRestartableCounterBind );
 
-    // Startup worker here because we'll send commands to it from other places of this activity
-    RestartableCounter.createWorker( getApplicationContext() );
-    RestartableCounter.enableForeground( getApplicationContext(), false );
+    WorkerServiceStarter starter = new WorkerServiceStarter();
+    starter.startService( this );
 
     if( savedInstanceState != null ) {
       mRestartableCounterBind.start.set( savedInstanceState.getString( STATE_RESTARTABLE_START ) );
@@ -67,24 +69,58 @@ public class MainActv extends AppCompatActivity
   {
     super.onStart();
     EventBus.getDefault().register( this );
-    RestartableCounter.enableForeground( getApplicationContext(), false );
   }
 
   @Override
   protected void onStop()
   {
     EventBus.getDefault().unregister( this );
-    RestartableCounter.enableForeground( getApplicationContext(), true );
     super.onStop();
   }
 
   @Override
-  protected void onDestroy()
+  protected void onResume()
   {
-    if( !isChangingConfigurations() && MainService.obtainServiceStatusEvent().started ) {
-      MainService.shutdownService( getApplicationContext(), false, true );
+    super.onResume();
+    mActivityVisible = true;
+    updateServiceForeground();
+  }
+
+  @Override
+  protected void onPause()
+  {
+    mActivityVisible = false;
+    updateServiceForeground();
+    super.onPause();
+  }
+
+  @Override
+  public void onOldInstanceShuttingDown()
+  {
+    // TODO: 15.07.2016 disable UI until service shutdown sequence completed
+  }
+
+  @Override
+  public void onStartWorkers()
+  {
+    // Startup worker here because we'll send commands to it from other places of this activity
+    RestartableCounter.createWorker( getApplicationContext() );
+    updateServiceForeground();
+  }
+
+  @Override
+  public void onBackPressed()
+  {
+    MainService.shutdownService( getApplicationContext(), true, true );
+    super.onBackPressed();
+  }
+
+  private void updateServiceForeground()
+  {
+    WorkerServiceEvents.ServiceActivityStatus status = MainService.obtainServiceStatusEvent();
+    if( status.started && !status.shuttingDown ) {
+      RestartableCounter.enableForeground( getApplicationContext(), !mActivityVisible );
     }
-    super.onDestroy();
   }
 
   public class SimpleCounterBind
@@ -154,6 +190,8 @@ public class MainActv extends AppCompatActivity
 
   private SimpleCounterBind mSimpleCounterBind = new SimpleCounterBind();
   private RestartableCounterBind mRestartableCounterBind = new RestartableCounterBind();
+
+  private boolean mActivityVisible;
 
   private static final String STATE_RESTARTABLE_START = "start";
   private static final String STATE_RESTARTABLE_END = "end";

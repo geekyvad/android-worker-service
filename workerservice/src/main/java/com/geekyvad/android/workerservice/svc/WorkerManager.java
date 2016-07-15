@@ -107,29 +107,16 @@ public class WorkerManager
     // Stop worker
     Thread wrkThread = (Thread) mWorkers.get( workerName );
     if( wrkThread != null && wrkThread.isAlive() ) {
-      LogUtils.LOGD( TAG, "Worker is running: " + workerName );
-      IWorker iworker = (IWorker) wrkThread;
-
-      // Send stop request
-      if( wrkThread instanceof HandlerWorker ) {
-        // Handler worker need to be treated more softly
-        HandlerWorker handlerWorker = (HandlerWorker) wrkThread;
-        handlerWorker.sendQuit();
-      } else if( wrkThread instanceof ThreadWorker ) {
-        wrkThread.interrupt();
-      }
-
-      // Wait for worker to finish if flag is set
+      LogUtils.LOGD( TAG, "Stopping worker: " + workerName );
+      sendWorkerStopRequest( wrkThread );
       if( ( flags & FLAG_WAIT ) != 0 ) {
-        LogUtils.LOGV( TAG, "Waiting for worker exit: " + workerName );
         try {
-          wrkThread.join();
+          waitForWorkerExit( wrkThread, workerName );
         } catch( InterruptedException e ) {
-          LogUtils.LOGW( TAG,
+          LogUtils.LOGE( TAG,
               "Interrupted while waiting for worker exit " + workerName + "; aborting" );
         }
       }
-
       LogUtils.LOGD( TAG, "Worker stopped: " + workerName );
     } else {
       LogUtils.LOGD( TAG, "Worker already stopped: " + workerName );
@@ -139,6 +126,25 @@ public class WorkerManager
       }
     }
 
+  }
+
+  protected void sendWorkerStopRequest( Thread wrkThread )
+  {
+    // Send stop request
+    if( wrkThread instanceof HandlerWorker ) {
+      // Handler worker need to be treated more softly
+      HandlerWorker handlerWorker = (HandlerWorker) wrkThread;
+      handlerWorker.sendQuit();
+    } else if( wrkThread instanceof ThreadWorker ) {
+      wrkThread.interrupt();
+    }
+  }
+
+  protected void waitForWorkerExit( Thread wrkThread, String workerName ) throws InterruptedException
+  {
+    // Wait for worker to finish if flag is set
+    LogUtils.LOGV( TAG, "Waiting for worker exit: " + workerName );
+    wrkThread.join();
   }
 
   public void sendWorkerMessage( @NonNull String workerName, Message message )
@@ -182,10 +188,29 @@ public class WorkerManager
   {
     LogUtils.LOGV( TAG, "Shutting down all workers" );
     mBlockNewWorkers = true;
+
+    // Send stop requests to all workers
     Set<String> workerNames = mWorkers.keySet();
     for( String wName : workerNames ) {
-      stopWorker( wName, flags );
+      Thread wrkThread = (Thread) mWorkers.get( wName );
+      if( wrkThread != null && wrkThread.isAlive() ) {
+        sendWorkerStopRequest( wrkThread );
+      }
     }
+
+    // Wait for workers if flag set
+    for( String wName : workerNames ) {
+      Thread wrkThread = (Thread) mWorkers.get( wName );
+      if( wrkThread != null && wrkThread.isAlive() ) {
+        try {
+          waitForWorkerExit( wrkThread, wName );
+        } catch( InterruptedException e ) {
+          LogUtils.LOGE( TAG, "Interrupted while waiting for workers exit" );
+          break;
+        }
+      }
+    }
+
     mContext = null;
     mMainSvcHandler = null;
     mWorkers.clear();

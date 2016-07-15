@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.geekyvad.android.workerserviceapp.svc.restartable;
+package com.geekyvad.android.workerserviceapp.wrk.restartable;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -25,14 +25,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.TaskStackBuilder;
 import com.geekyvad.android.workerservice.wrk.HandlerWorker;
 import com.geekyvad.android.workerserviceapp.R;
 import com.geekyvad.android.workerserviceapp.gui.MainActv;
-import com.geekyvad.android.workerserviceapp.svc.MainService;
+import com.geekyvad.android.workerserviceapp.wrk.MainService;
 import org.greenrobot.eventbus.EventBus;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 
 import java.util.concurrent.TimeUnit;

@@ -22,7 +22,7 @@
         </activity>
 
         <service
-            android:name=".svc.MainService"
+            android:name=".wrk.MainService"
             android:enabled="true"
             android:exported="false"
             android:label="Main service"

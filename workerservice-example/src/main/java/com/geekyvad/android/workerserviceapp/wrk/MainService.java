@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.geekyvad.android.workerserviceapp.svc;
+package com.geekyvad.android.workerserviceapp.wrk;
 
 import android.util.Log;
 import com.geekyvad.android.workerservice.svc.WorkerManager;
 import com.geekyvad.android.workerservice.svc.WorkerService;
 import com.geekyvad.android.workerservice.svc.WorkerServiceConfig;
-import com.geekyvad.android.workerserviceapp.svc.counter.SimpleCounter;
-import com.geekyvad.android.workerserviceapp.svc.restartable.RestartableCounter;
+import com.geekyvad.android.workerserviceapp.wrk.counter.SimpleCounter;
+import com.geekyvad.android.workerserviceapp.wrk.restartable.RestartableCounter;
 
 /**
  * @author Vadim Zadorozhny (created on 06.07.2016)

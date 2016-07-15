@@ -16,7 +16,7 @@
 package com.geekyvad.android.workerserviceapp;
 
 import android.app.Application;
-import com.geekyvad.android.workerserviceapp.svc.MainService;
+import com.geekyvad.android.workerserviceapp.wrk.MainService;
 import org.greenrobot.eventbus.EventBus;
 
 /**

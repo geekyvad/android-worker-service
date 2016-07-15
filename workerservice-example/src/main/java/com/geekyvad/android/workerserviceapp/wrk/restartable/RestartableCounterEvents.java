@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.geekyvad.android.workerserviceapp.svc.counter;
+package com.geekyvad.android.workerserviceapp.wrk.restartable;
 
 import org.greenrobot.eventbus.EventBus;
 
 /**
  * @author Vadim Zadorozhny (created on 06.07.2016)
  */
-public class SimpleCounterEvents
+public class RestartableCounterEvents
 {
   public static class CounterStatus
   {

@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.geekyvad.android.workerserviceapp.svc.counter;
+package com.geekyvad.android.workerserviceapp.wrk.counter;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.geekyvad.android.workerservice.util.LogUtils;
 import com.geekyvad.android.workerservice.wrk.ThreadWorker;
-import com.geekyvad.android.workerserviceapp.svc.MainService;
+import com.geekyvad.android.workerserviceapp.wrk.MainService;
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -69,10 +70,14 @@ public class SimpleCounter extends ThreadWorker
         if( i + 1 < COUNT_LIMIT ) {
           sleep( 1000 );
         }
+        LogUtils.LOGV( TAG, "" + i );
       } catch( InterruptedException e ) {
         e.printStackTrace();
-        break;
+        // Do not break - simulate worker that needs time to exit
+        // break;
       }
     }
   }
+
+  private static final String TAG = LogUtils.makeLogTag( SimpleCounter.class );
 }
