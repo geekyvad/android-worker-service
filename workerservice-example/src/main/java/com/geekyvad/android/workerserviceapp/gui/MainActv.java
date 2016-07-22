@@ -133,7 +133,9 @@ public class MainActv extends AppCompatActivity implements
   @Override
   public void onBackPressed()
   {
-    MainService.shutdownService( getApplicationContext(), true, true );
+    if( isTaskRoot() ) {
+      MainService.shutdownService( getApplicationContext(), true, true );
+    }
     super.onBackPressed();
   }
 
