@@ -47,13 +47,25 @@ public class MainActv extends AppCompatActivity implements
     binding.setSimpleCounter( mSimpleCounterBind );
     binding.setRestartableCounter( mRestartableCounterBind );
 
-    WorkerServiceStarter starter = new WorkerServiceStarter();
-    starter.startService( this );
-
     if( savedInstanceState != null ) {
       mRestartableCounterBind.start.set( savedInstanceState.getString( STATE_RESTARTABLE_START ) );
       mRestartableCounterBind.end.set( savedInstanceState.getString( STATE_RESTARTABLE_END ) );
+
+      mProgressDlgFrg = (ProgressDlgFrg) getSupportFragmentManager().findFragmentByTag( FRG_TAG_PROGRESS_DLG );
     }
+
+    mServiceStarter = new WorkerServiceStarter();
+    mServiceStarter.startService( this );
+  }
+
+  @Override
+  protected void onDestroy()
+  {
+    if( mServiceStarter != null ) {
+      mServiceStarter.cancelStart();
+      mServiceStarter = null;
+    }
+    super.onDestroy();
   }
 
   @Override
@@ -97,12 +109,22 @@ public class MainActv extends AppCompatActivity implements
   @Override
   public void onOldInstanceShuttingDown()
   {
-    // TODO: 15.07.2016 disable UI until service shutdown sequence completed
+    if( mProgressDlgFrg == null ) {
+      mProgressDlgFrg = new ProgressDlgFrg();
+    }
+    if( ! mProgressDlgFrg.isAdded() ){
+      mProgressDlgFrg.show( getSupportFragmentManager(), FRG_TAG_PROGRESS_DLG );
+    }
   }
 
   @Override
   public void onStartWorkers()
   {
+    if( mProgressDlgFrg != null ) {
+      mProgressDlgFrg.dismiss();
+    }
+    mProgressDlgFrg = null;
+    mServiceStarter = null;
     // Startup worker here because we'll send commands to it from other places of this activity
     RestartableCounter.createWorker( getApplicationContext() );
     updateServiceForeground();
@@ -192,6 +214,10 @@ public class MainActv extends AppCompatActivity implements
   private RestartableCounterBind mRestartableCounterBind = new RestartableCounterBind();
 
   private boolean mActivityVisible;
+  private ProgressDlgFrg mProgressDlgFrg;
+  private WorkerServiceStarter mServiceStarter;
+
+  private static final String FRG_TAG_PROGRESS_DLG = "frgTag.ProgressDlg";
 
   private static final String STATE_RESTARTABLE_START = "start";
   private static final String STATE_RESTARTABLE_END = "end";
