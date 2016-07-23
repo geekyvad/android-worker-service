@@ -99,11 +99,13 @@ public class MainActv extends AppCompatActivity implements
   }
 
   @Override
-  protected void onPause()
+  public void onTrimMemory( int level )
   {
-    mActivityVisible = false;
-    updateServiceForeground();
-    super.onPause();
+    super.onTrimMemory( level );
+    if( level == TRIM_MEMORY_UI_HIDDEN ) {
+      mActivityVisible = false;
+      updateServiceForeground();
+    }
   }
 
   @Override
