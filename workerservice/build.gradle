@@ -6,7 +6,7 @@ ext {
  
     publishedGroupId = 'com.geekyvad.android.workerservice'
     artifact = 'workerservice'
-    libraryVersion = '0.4.0'
+    libraryVersion = '0.4.1'
 
     libraryName = 'AndroidWorkerService'
     libraryDescription = 'Android service that allows multiple asynchronous workers'
@@ -30,8 +30,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 3
-        versionName "0.4.0" // don't forget to update in ext{}
+        versionCode 4
+        versionName "0.4.1" // don't forget to update in ext{}
     }
     buildTypes {
         release {
