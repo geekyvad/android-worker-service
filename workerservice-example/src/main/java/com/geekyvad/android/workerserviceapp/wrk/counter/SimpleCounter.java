@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import com.geekyvad.android.workerservice.util.LogUtils;
 import com.geekyvad.android.workerservice.wrk.ThreadWorker;
 import com.geekyvad.android.workerserviceapp.wrk.MainService;
+import com.geekyvad.android.workerserviceapp.wrk.restartable.RestartableCounter;
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -77,6 +78,8 @@ public class SimpleCounter extends ThreadWorker
         // break;
       }
     }
+    // to reproduce bug
+    //RestartableCounter.setRange( getContext(), 10, 12 );
   }
 
   private static final String TAG = LogUtils.makeLogTag( SimpleCounter.class );

@@ -107,11 +107,6 @@ abstract public class WorkerService extends Service
       intent.putExtra( PARAM_FORCE_SERVICE_SHUTDOWN, true );
     }
 
-    // Update service status sticky event - service is shutting down
-    WorkerServiceEvents.ServiceActivityStatus status = obtainServiceStatusEvent();
-    status.shuttingDown = true;
-    EventBus.getDefault().postSticky( status );
-
     processIntent( context, intent );
   }
 
@@ -280,9 +275,13 @@ abstract public class WorkerService extends Service
       LogUtils.LOGV( TAG, logging );
     }
 
-    if( mQuitting ) {
+    WorkerServiceEvents.ServiceActivityStatus serviceStatus = obtainServiceStatusEvent();
+    if( serviceStatus.shuttingDown ) {
       // Mo more commands
-      LogUtils.LOGE( TAG, "Service is shutting down! New commands not accepted." );
+      LogUtils.LOGW( TAG, "Service is shutting down! New commands are not accepted." );
+      return START_MODE;
+    } else if( ! serviceStatus.started ) {
+      LogUtils.LOGE( TAG, "Service has been shut down or not started" );
       return START_MODE;
     }
 
@@ -382,6 +381,12 @@ abstract public class WorkerService extends Service
     protected void onShutdown( Intent intent )
     {
       LogUtils.LOGV( TAG, "onShutdown" );
+
+      // Update service status sticky event - service is shutting down
+      WorkerServiceEvents.ServiceActivityStatus status = obtainServiceStatusEvent();
+      status.shuttingDown = true;
+      EventBus.getDefault().postSticky( status );
+
       if( handleShutdown( intent ) ) {
         Looper looper = getLooper();
         // Quit looper
@@ -392,10 +397,10 @@ abstract public class WorkerService extends Service
             looper.quit();
           }
         }
+        // Stop service
         stopSelf();
       } else {
         LogUtils.LOGI( TAG, "Shutdown cancelled" );
-        WorkerServiceEvents.ServiceActivityStatus status = obtainServiceStatusEvent();
         status.shuttingDown = false;
         EventBus.getDefault().postSticky( status );
       }
@@ -438,8 +443,6 @@ abstract public class WorkerService extends Service
 
   private boolean handleShutdown( Intent intent )
   {
-    // Fix: long shutdown prevents starting workers if user exited and immediately launched app again
-    //mQuitting = true;
     boolean wait = intent == null || intent.getBooleanExtra( PARAM_WAIT_FOR_WORKER_EXIT, true );
     mWorkerManager.shutdown( wait ? WorkerManager.FLAG_WAIT : WorkerManager.FLAG_DEFAULT );
 
@@ -457,7 +460,6 @@ abstract public class WorkerService extends Service
     if( !proceedShutdown ) {
       // Restore worker manager
       mWorkerManager = onCreateWorkerManager( mServiceHandler );
-      mQuitting = false;
     }
 
     return proceedShutdown;
@@ -470,13 +472,6 @@ abstract public class WorkerService extends Service
   private WorkerManager mWorkerManager;
   private ServiceHandler mServiceHandler;
   private WorkerServiceConfig mConfiguration;
-
-  /**
-   * Controls ability of server to receive commands during shutdown
-   */
-  private boolean mQuitting;
-
-//  private static AtomicBoolean stServiceCreated = new AtomicBoolean( false );
 
   private static final String TAG = LogUtils.makeLogTag( WorkerService.class );
 }
