@@ -21,9 +21,11 @@ allprojects {
  
 ```gradle
 dependencies {
-	compile 'com.geekyvad.android:workerservice:0.1.0'
+	compile 'com.geekyvad.android:workerservice:x.y.z'
 }
 ```
+
+Where x.y.z - version. Check tags in master branch to find out the latest one.
 
 Dependencies
 ------------
