@@ -21,7 +21,7 @@ allprojects {
  
 ```gradle
 dependencies {
-	compile 'com.geekyvad.android:workerservice:x.y.z'
+	compile 'com.geekyvad.android.workerservice:workerservice:x.y.z'
 }
 ```
 
